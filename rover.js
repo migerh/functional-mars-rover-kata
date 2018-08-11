@@ -1,74 +1,62 @@
 const R = require('ramda');
 
+const normalizeUpdateActionMap = {
+  // Movement
+  'NF': 'Up',
+  'SB': 'Up',
+  'NB': 'Down',
+  'SF': 'Down',
+  'WF': 'Left',
+  'EF': 'Right',
+  'EB': 'Left',
+  'WB': 'Right',
+
+  // Rotation
+  'WL': 'FaceSouth',
+  'WR': 'FaceNorth',
+  'NL': 'FaceWest',
+  'NR': 'FaceEast',
+  'EL': 'FaceNorth',
+  'ER': 'FaceSouth',
+  'SL': 'FaceEast',
+  'SR': 'FaceWest',
+};
+
 const updateState = {
-  // movement, could be simplified
-  'NF': (state) => ({
+  'Up': (state) => ({
     ...state,
     y: state.y - 1
   }),
-  'NB': (state) => ({
+  'Down': (state) => ({
     ...state,
     y: state.y + 1
   }),
-  'SF': (state) => ({
-    ...state,
-    y: state.y + 1
-  }),
-  'SB': (state) => ({
-    ...state,
-    y: state.y - 1
-  }),
-  'WF': (state) => ({
+  'Left': (state) => ({
     ...state,
     x: state.x - 1
   }),
-  'WB': (state) => ({
+  'Right': (state) => ({
     ...state,
     x: state.x + 1,
   }),
-  'EF': (state) => ({
-    ...state,
-    x: state.x + 1
-  }),
-  'EB': (state) => ({
-    ...state,
-    x: state.x - 1
-  }),
 
-  //rotation
-  'WL': (state) => ({
-    ...state,
-    facing: 'S'
-  }),
-  'WR': (state) => ({
+  'FaceNorth': (state) => ({
     ...state,
     facing: 'N'
   }),
-  'NL': (state) => ({
-    ...state,
-    facing: 'W'
-  }),
-  'NR': (state) => ({
+  'FaceEast': (state) => ({
     ...state,
     facing: 'E'
   }),
-  'EL': (state) => ({
-    ...state,
-    facing: 'N'
-  }),
-  'ER': (state) => ({
+  'FaceSouth': (state) => ({
     ...state,
     facing: 'S'
   }),
-  'SL': (state) => ({
-    ...state,
-    facing: 'E'
-  }),
-  'SR': (state) => ({
+  'FaceWest': (state) => ({
     ...state,
     facing: 'W'
-  }),
-}
+  })
+};
 
 const wrap = R.curry((planet, roverState) => {
   if (roverState.x < 0) {
@@ -97,7 +85,9 @@ const wrap = R.curry((planet, roverState) => {
 });
 
 const move = R.curry((planet, roverState, command) => {
-  const moveFunction = updateState[`${roverState.facing}${command}`];
+  const normalizedCommand = normalizeUpdateActionMap[`${roverState.facing}${command}`];
+  const moveFunction = updateState[normalizedCommand];
+
   return wrap(planet)(moveFunction(roverState));
 });
 
