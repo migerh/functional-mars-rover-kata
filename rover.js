@@ -1,6 +1,6 @@
 const R = require('ramda');
 
-const normalizeUpdateActionMap = {
+const commandNormalizationMap = {
   // Movement
   'NF': 'Up',
   'SB': 'Up',
@@ -22,7 +22,7 @@ const normalizeUpdateActionMap = {
   'SR': 'FaceWest',
 };
 
-const updateState = {
+const normalizedCommandToStateUpdaterMap = {
   'Up': (state) => ({
     ...state,
     y: state.y - 1
@@ -84,13 +84,21 @@ const wrap = R.curry((planet, roverState) => {
   return roverState;
 });
 
-const move = R.curry((planet, roverState, command) => {
-  const normalizedCommand = normalizeUpdateActionMap[`${roverState.facing}${command}`];
-  const moveFunction = updateState[normalizedCommand];
+const initializeRoverReducer = R.curry((planet, roverState, command) => {
+  const wrapMovement = wrap(planet);
 
-  return wrap(planet)(moveFunction(roverState));
+  const normalizedCommand = commandNormalizationMap[`${roverState.facing}${command}`];
+  const stateUpdater = normalizedCommandToStateUpdaterMap[normalizedCommand];
+
+  const calculateNewRoverState = R.pipe(
+    stateUpdater,
+    wrapMovement
+  );
+
+  return calculateNewRoverState(roverState);
 });
 
-module.exports = R.curry((planet, roverState, commands) => {
-  return R.reduce(move(planet), roverState, commands)
+module.exports = R.curry((planet, initialRoverState, commands) => {
+  const roverReducer = initializeRoverReducer(planet);
+  return R.reduce(roverReducer, initialRoverState, commands);
 });

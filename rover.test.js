@@ -106,10 +106,38 @@ test('complex example', () => {
   expect(state.facing).toBe('E');
 });
 
-test('it wraps', () => {
+test('it wraps to the north', () => {
   const planet = {width: 5, height: 5};
-  const roverState = {x: 3, y: 3, facing: 'N'};
+  const initialRoverState = {x: 3, y: 3, facing: 'N'};
+  const curiosity = rover(planet, initialRoverState);
 
-  const state = rover(planet, roverState, 'FFFFF'.split(''));
+  const state = curiosity('FFFFF'.split(''));
   expect(state.y).toBe(3);
+});
+
+test('it wraps to the south', () => {
+  const planet = {width: 5, height: 5};
+  const initialRoverState = {x: 3, y: 3, facing: 'N'};
+  const curiosity = rover(planet, initialRoverState);
+
+  const state = curiosity('BBBBB'.split(''));
+  expect(state.y).toBe(3);
+});
+
+test('it wraps to the west', () => {
+  const planet = {width: 5, height: 5};
+  const initialRoverState = {x: 3, y: 3, facing: 'W'};
+  const curiosity = rover(planet, initialRoverState);
+
+  const state = curiosity('FFFFF'.split(''));
+  expect(state.x).toBe(3);
+});
+
+test('it wraps to the east', () => {
+  const planet = {width: 5, height: 5};
+  const initialRoverState = {x: 3, y: 3, facing: 'E'};
+  const curiosity = rover(planet, initialRoverState);
+
+  const state = curiosity('FFFFF'.split(''));
+  expect(state.x).toBe(3);
 });
