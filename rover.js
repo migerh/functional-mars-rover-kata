@@ -59,29 +59,11 @@ const normalizedCommandToStateUpdaterMap = {
 };
 
 const wrap = R.curry((planet, roverState) => {
-  if (roverState.x < 0) {
-    return {
-      ...roverState,
-      x: planet.width - 1
-    }
-  } else if (roverState.x > planet.width - 1) {
-    return {
-      ...roverState,
-      x: 0
-    }
-  } else if (roverState.y < 0) {
-    return {
-      ...roverState,
-      y: planet.height - 1
-    }
-  } else if (roverState.y > planet.height - 1) {
-    return {
-      ...roverState,
-      y: 0
-    }
+  return {
+    ...roverState,
+    x: (roverState.x + planet.width) % planet.width,
+    y: (roverState.y + planet.height) % planet.height
   }
-
-  return roverState;
 });
 
 const initializeRoverReducer = R.curry((planet, roverState, command) => {
