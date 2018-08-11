@@ -92,9 +92,14 @@ const wrap = R.curry((planet, roverState) => {
       y: 0
     }
   }
+
+  return roverState;
 });
 
-const move = R.curry((planet, roverState, command) => updateState[`${roverState.facing}${command}`](roverState));
+const move = R.curry((planet, roverState, command) => {
+  const moveFunction = updateState[`${roverState.facing}${command}`];
+  return wrap(planet)(moveFunction(roverState));
+});
 
 module.exports = R.curry((planet, roverState, commands) => {
   return R.reduce(move(planet), roverState, commands)

@@ -41,7 +41,7 @@ test('facing south, B decreases y by one', () => {
 });
 
 test('facing north, BB increases y by two', () => {
-  const planet = {width: 5, height: 5};
+  const planet = {width: 6, height: 6};
   const roverState = {x: 3, y: 3, facing: 'N'};
 
   const state = rover(planet, roverState, ['B', 'B']);
